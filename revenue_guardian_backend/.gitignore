@@ -1,0 +1,32 @@
+# --- Python General ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+env/
+envs/
+.conda/
+.venv/
+venv/
+ENV/
+
+# --- Environment Variables (CRITICAL) ---
+.env
+
+# --- Database ---
+# Ignore default SQLite if generated
+db.sqlite3
+db.sqlite3-journal
+# Ignore local Postgres dumps (good practice)
+*.sql
+*.psql
+
+# --- IDEs & Editors ---
+# IntelliJ IDEA
+.idea/
+*.iml
+# VS Code
+.vscode/
+# Mac
+.DS_Store
