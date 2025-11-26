@@ -36,7 +36,20 @@ class PolicySerializer(serializers.ModelSerializer):
     def validate(self, data):
         """
         Check that end_date is after start_date.
+        Handles both Create (all data present) and Update (partial data).
         """
-        if data['start_date'] > data['end_date']:
-            raise serializers.ValidationError("End date must be after start date.")
+        # 1. Get the instance being updated (if it exists)
+        instance = getattr(self, 'instance', None)
+
+        # 2. Get start_date: Use incoming data, fallback to existing DB instance, or None
+        start_date = data.get('start_date', instance.start_date if instance else None)
+        
+        # 3. Get end_date: Use incoming data, fallback to existing DB instance, or None
+        end_date = data.get('end_date', instance.end_date if instance else None)
+
+        # 4. Perform the check only if we have both dates
+        if start_date and end_date:
+            if start_date > end_date:
+                raise serializers.ValidationError("End date must be after start date.")
+        
         return data
