@@ -157,3 +157,11 @@ SIMPLE_JWT = {
 # Print emails to console for development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_FROM_ADDRESS = 'noreply@revenueguardian.com'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+# Allow credentials (cookies/auth headers) to be sent
+CORS_ALLOW_CREDENTIALS = True
