@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, ReactNode, useContext } from 'react';
+import { createContext, useState, useEffect, ReactNode, useContext, useCallback } from 'react';
 import { jwtDecode } from "jwt-decode";
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    // 3. Logout Function (moved before useEffect to avoid dependency issues)
+    const logout = useCallback(() => {
+        setTokens(null);
+        setUser(null);
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        navigate('/login');
+    }, [navigate]);
+
     // 1. Decode User info from Token on load
     useEffect(() => {
         if (tokens) {
@@ -31,7 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
         }
         setLoading(false); 
-    }, [tokens]);
+    }, [tokens, logout]);
 
     // 2. Login Function
     const login = async (e: any) => {
@@ -57,14 +66,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    // 3. Logout Function
-    const logout = () => {
-        setTokens(null);
-        setUser(null);
-        localStorage.removeItem('access');
-        localStorage.removeItem('refresh');
-        navigate('/login');
-    };
 
     return (
         <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user, loading }}>

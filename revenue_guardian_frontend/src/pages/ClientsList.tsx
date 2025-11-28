@@ -56,11 +56,12 @@ const ClientsList = () => {
                     <p className="text-gray-500 text-sm mt-1">Manage your client relationships</p>
                 </div>
                 
-                {/* Add Client Button (Visual Only for now) */}
-                <button className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm">
+                <Link 
+                    to="/clients/add" // <-- CHANGE HERE
+                    className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm">
                     <Plus className="h-4 w-4 mr-2" />
                     Add New Client
-                </button>
+                </Link>
             </div>
 
             {/* Search Bar */}

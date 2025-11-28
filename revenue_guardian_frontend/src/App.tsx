@@ -9,6 +9,9 @@ import Dashboard from './pages/Dashboard';
 import ClientDetails from './pages/ClientDetails';
 import PolicyDetails from './pages/PolicyDetails';
 import ClientsList from './pages/ClientsList';
+import ClientAdd from './pages/ClientAdd';
+import PolicyAdd from './pages/PolicyAdd';
+import type { JSX } from 'react';
 
 
 // --- PRIVATE ROUTE COMPONENT ---
@@ -50,6 +53,15 @@ function App() {
             />
             
             <Route 
+                path="/clients/add" 
+                element={
+                    <PrivateRoute>
+                        <ClientAdd />
+                    </PrivateRoute>
+                } 
+            />
+
+            <Route 
                 path="/clients/:id" 
                 element={
                     <PrivateRoute>
@@ -67,6 +79,11 @@ function App() {
                 } 
             />
             
+            <Route 
+                path="/policies/add" 
+                element={<PrivateRoute><PolicyAdd /></PrivateRoute>} 
+            />
+
             <Route 
                 path="/renewals" 
                 element={

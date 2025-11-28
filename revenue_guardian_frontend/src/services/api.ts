@@ -7,6 +7,32 @@ const api = axios.create({
   },
 });
 
+export const getCarriers = async () => {
+  const response = await api.get('carriers/');
+  return response.data;
+};
+
+interface ClientFormData {
+  name: string;
+  email: string;
+  phone: string;
+  gender: 'M' | 'F' | 'O';
+  address?: string;
+}
+
+interface PolicyFormData {
+  client: number;     // Client ID
+  carrier: number;    // Carrier ID
+  policy_number: string;
+  policy_type: string;
+  status: string;
+  premium_amount: string; // Sending as string is safer for decimals
+  sum_insured: string;
+  start_date: string;
+  end_date: string;
+  renewal_date: string;
+}
+
 // Interceptor: Add Token to every request automatically
 api.interceptors.request.use(
   (config) => {
@@ -30,6 +56,18 @@ export const getClient = async (id: string) => {
   return response.data;
 };
 
+export const createClient = async (clientData: ClientFormData) => {
+  // POST request to create a new client
+  const response = await api.post('clients/', clientData);
+  return response.data;
+};
+
+export const updateClient = async (clientId: number, clientData: ClientFormData) => {
+  // PUT/PATCH request to update an existing client
+  const response = await api.put(`clients/${clientId}/`, clientData);
+  return response.data;
+};
+
 export const getClientPolicies = async (clientId: string) => {
   const response = await api.get(`policies/?client_id=${clientId}`);
   return response.data;
@@ -44,6 +82,16 @@ export const getPolicy = async (id: string) => {
 export const getPolicyList = async () => {
   // Fetches all policies belonging to the currently logged-in agent
   const response = await api.get(`policies/`); 
+  return response.data;
+};
+
+export const createPolicy = async (data: PolicyFormData) => {
+  const response = await api.post('policies/', data);
+  return response.data;
+};
+
+export const updatePolicy = async (id: number, data: PolicyFormData) => {
+  const response = await api.put(`policies/${id}/`, data);
   return response.data;
 };
 

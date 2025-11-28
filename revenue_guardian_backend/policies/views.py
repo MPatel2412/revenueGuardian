@@ -35,6 +35,16 @@ class ClientDetailView(generics.RetrieveUpdateDestroyAPIView):
         # SECURITY: Prevents Agent A from accessing Agent B's client via ID URL
         return Client.objects.filter(agent=self.request.user)
 
+class ClientRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Handles GET, PUT, PATCH, DELETE for a single Client instance.
+    """
+    serializer_class = ClientSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Crucial security filter: Agents can only view/update their own clients.
+        return Client.objects.filter(agent=self.request.user)
 
 # --- Policy Views ---
 class PolicyListCreateView(generics.ListCreateAPIView):
@@ -56,6 +66,14 @@ class PolicyListCreateView(generics.ListCreateAPIView):
             queryset = queryset.filter(client_id=client_id)
             
         return queryset
+
+class PolicyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PolicySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Security: Only allow agents to edit their own policies
+        return Policy.objects.filter(client__agent=self.request.user)
 
 class PolicyDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PolicySerializer
