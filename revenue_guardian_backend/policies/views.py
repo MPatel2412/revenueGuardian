@@ -43,7 +43,19 @@ class PolicyListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         # Return policies where the client belongs to the logged-in agent
-        return Policy.objects.filter(client__agent=self.request.user)
+        # return Policy.objects.filter(client__agent=self.request.user)
+        
+        # 1. Start with all policies owned by this agent
+        queryset = Policy.objects.filter(client__agent=self.request.user)
+        
+        # 2. Check if the URL has ?client_id=X
+        client_id = self.request.query_params.get('client_id')
+        
+        # 3. If yes, filter further
+        if client_id:
+            queryset = queryset.filter(client_id=client_id)
+            
+        return queryset
 
 class PolicyDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PolicySerializer

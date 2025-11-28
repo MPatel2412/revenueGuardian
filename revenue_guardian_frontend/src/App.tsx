@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
+import ClientDetails from './pages/ClientDetails';
+import PolicyDetails from './pages/PolicyDetails';
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
     const { user, loading } = useAuth();
@@ -33,7 +35,22 @@ function App() {
         <Toaster position="top-right" />
         <Routes>
             <Route path="/login" element={<Login />} />
-            
+            <Route 
+                path="/clients/:id" 
+                element={
+                    <PrivateRoute>
+                        <ClientDetails />
+                    </PrivateRoute>
+                } 
+            />
+            <Route 
+            path="/policies/:id" 
+            element={
+                <PrivateRoute>
+                    <PolicyDetails />
+                </PrivateRoute>
+            } 
+            />
             {/* Protected Route */}
             <Route 
                 path="/" 
