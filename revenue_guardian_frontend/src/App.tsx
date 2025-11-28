@@ -1,40 +1,54 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
+
+// Import Components
+import Layout from './components/Layout';
 import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 import ClientDetails from './pages/ClientDetails';
 import PolicyDetails from './pages/PolicyDetails';
+import ClientsList from './pages/ClientsList';
 
+
+// --- PRIVATE ROUTE COMPONENT ---
+// This handles both Security (Redirect to Login) and Layout (Adding Sidebar/Header)
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
     const { user, loading } = useAuth();
 
-    // If we are still checking the token, show a blank screen (or spinner) instead of redirecting
     if (loading) {
-        return <div>Loading...</div>; 
+        return <div className="flex h-screen items-center justify-center">Loading...</div>; 
     }
 
-    return user ? children : <Navigate to="/login" />;
-};
-
-const Dashboard = () => {
-    const { logout, user } = useAuth();
-    return (
-        <div className="p-10">
-            <h1 className="text-3xl font-bold">Welcome, Agent {user?.username || 'User'}!</h1>
-            <p className="mb-4">This is the secure dashboard.</p>
-            <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
-        </div>
+    // If logged in, wrap the content in the main Layout
+    return user ? (
+        <Layout>
+            {children}
+        </Layout>
+    ) : (
+        <Navigate to="/login" />
     );
 };
 
+// --- MAIN APP COMPONENT ---
 function App() {
   return (
-    // 'BrowserRouter' is usually wrapped in main.tsx, assuming it is there. 
-    // If you get a Router error, wrap this whole return in <BrowserRouter>
     <AuthProvider>
         <Toaster position="top-right" />
         <Routes>
+            {/* Public Route */}
             <Route path="/login" element={<Login />} />
+            
+            {/* Protected Routes (Wrapped in Layout automatically by PrivateRoute) */}
+            <Route 
+                path="/" 
+                element={
+                    <PrivateRoute>
+                        <Dashboard />
+                    </PrivateRoute>
+                } 
+            />
+            
             <Route 
                 path="/clients/:id" 
                 element={
@@ -43,20 +57,38 @@ function App() {
                     </PrivateRoute>
                 } 
             />
+            
             <Route 
-            path="/policies/:id" 
-            element={
-                <PrivateRoute>
-                    <PolicyDetails />
-                </PrivateRoute>
-            } 
-            />
-            {/* Protected Route */}
-            <Route 
-                path="/" 
+                path="/policies/:id" 
                 element={
                     <PrivateRoute>
-                        <Dashboard />
+                        <PolicyDetails />
+                    </PrivateRoute>
+                } 
+            />
+            
+            <Route 
+                path="/renewals" 
+                element={
+                    <PrivateRoute>
+                        <div className="p-10 text-xl text-gray-500">Renewals Management (Coming Soon)</div>
+                    </PrivateRoute>
+                } 
+            />
+
+            <Route 
+                path="/settings" 
+                element={
+                    <PrivateRoute>
+                        <div className="p-10 text-xl text-gray-500">Settings Page (Coming Soon)</div>
+                    </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/clients" 
+                element={
+                    <PrivateRoute>
+                        <ClientsList />
                     </PrivateRoute>
                 } 
             />

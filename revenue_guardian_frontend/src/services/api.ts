@@ -19,6 +19,12 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+export const getClientsList = async () => {
+  // Fetches all clients for the logged-in agent
+  const response = await api.get('clients/'); 
+  return response.data;
+};
+
 export const getClient = async (id: string) => {
   const response = await api.get(`clients/${id}/`);
   return response.data;
@@ -32,6 +38,12 @@ export const getClientPolicies = async (clientId: string) => {
 export const getPolicy = async (id: string) => {
   // Correct Path: /api/policies/5/
   const response = await api.get(`policies/${id}/`);
+  return response.data;
+};
+
+export const getPolicyList = async () => {
+  // Fetches all policies belonging to the currently logged-in agent
+  const response = await api.get(`policies/`); 
   return response.data;
 };
 
