@@ -3,9 +3,14 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
 
-// A simple Private Route wrapper
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
+
+    // If we are still checking the token, show a blank screen (or spinner) instead of redirecting
+    if (loading) {
+        return <div>Loading...</div>; 
+    }
+
     return user ? children : <Navigate to="/login" />;
 };
 

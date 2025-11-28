@@ -9,6 +9,7 @@ interface AuthContextType {
     login: (e: React.FormEvent) => void;
     logout: () => void;
     isAuthenticated: boolean;
+    loading: boolean; // Adding this so that it does not redirect to login again on refresh 
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -16,6 +17,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<any>(null);
     const [tokens, setTokens] = useState(() => localStorage.getItem('access') ? localStorage.getItem('access') : null);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     // 1. Decode User info from Token on load
@@ -28,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 logout(); // Token invalid/expired
             }
         }
+        setLoading(false); 
     }, [tokens]);
 
     // 2. Login Function
@@ -64,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user, loading }}>
             {children}
         </AuthContext.Provider>
     );
