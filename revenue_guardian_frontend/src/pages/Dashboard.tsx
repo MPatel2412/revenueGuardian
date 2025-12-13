@@ -10,15 +10,25 @@ interface Policy {
     id: number;
     policy_number: string;
     client: number;
-    client_details: { name: string; id: number }; // We need this from the Serializer
+    carrier: number;
+    client_details: { name: string; id: number }; 
+    carrier_details: { name: string };
     policy_type: string;
+    prev_policy_number: string;
+    status: string;
     premium_amount: number;
+    s_tax: number;
     sum_insured: number;
     start_date: string;
     end_date: string;
     renewal_date: string;
-    status: string;
-    carrier_details: { name: string };
+    vehicle_number: string;
+    bank_name: string;
+    cheque_number: string;
+    agency_code: string;
+    od_net_amount: number;
+    commission_amount: number;
+    remarks: string;
 }
 
 const Dashboard = () => {

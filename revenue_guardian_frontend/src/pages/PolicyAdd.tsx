@@ -23,13 +23,22 @@ const PolicyAdd = () => {
         client: preSelectedClientId || '',
         carrier: '',
         policy_number: '',
+        prev_policy_number: '',
         policy_type: 'AUTO',
         status: 'ACTIVE',
         premium_amount: '',
+        s_tax: '',
         sum_insured: '',
         start_date: '',
         end_date: '',
         renewal_date: '',
+        vehicle_number: '',
+        bank_name: '',
+        cheque_number: '',
+        agency_code: '',
+        od_net_amount: '',
+        commission_amount: '',
+        remarks: '',
     });
 
     // --- 1. Load Dropdown Options ---

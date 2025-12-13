@@ -68,6 +68,7 @@ class Policy(models.Model):
     
     # Financials (Use DecimalField for money, NEVER Float)
     premium_amount = models.DecimalField(max_digits=12, decimal_places=2, help_text="Annual Premium")
+    s_tax = models.DecimalField(max_digits=12, decimal_places=2, help_text="Surcharge Tax", default=0.00)
     sum_insured = models.DecimalField(max_digits=15, decimal_places=2)
     
     # Dates (Indexed for fast Renewal Alerts)
@@ -75,8 +76,18 @@ class Policy(models.Model):
     end_date = models.DateField()
     renewal_date = models.DateField(db_index=True, help_text="Date when renewal is due")
     
+    vehicle_number = models.CharField(max_length=20, blank=True, null=True)
+
+    # Additional Data
+    bank_name = models.CharField(max_length=100, blank=True, null=True)
+    cheque_number = models.CharField(max_length=20, blank=True, null=True)
+    agency_code = models.CharField(max_length=20, blank=True, null=True)
+    od_net_amount = models.DecimalField(max_digits=12, decimal_places=2, help_text="OD Net Amount", default=0.00)
+    commission_amount = models.DecimalField(max_digits=12, decimal_places=2, help_text="Commission Amount", default=0.00)
+    
     # Docs
     policy_file = models.FileField(upload_to='policy_docs/', blank=True, null=True)
 
+    remarks = models.TextField(blank=True, null=True)
     def __str__(self):
         return f"{self.policy_number} ({self.client.name})"

@@ -27,10 +27,11 @@ class PolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = Policy
         fields = [
-            'id', 'policy_number', 'client', 'carrier', 
+            'id', 'policy_number', 'prev_policy_number','client', 'carrier', 
             'client_details', 'carrier_details', # Nested data for display
-            'policy_type', 'status', 'premium_amount', 
-            'sum_insured', 'start_date', 'end_date', 'renewal_date', 'policy_file'
+            'policy_type', 'status', 'premium_amount','s_tax', 
+            'sum_insured', 'start_date', 'end_date', 'renewal_date', 'policy_file', 
+            'vehicle_number', 'bank_name', 'cheque_number', 'agency_code', 'od_net_amount', 'commission_amount', 'remarks'
         ]
 
     def validate(self, data):
