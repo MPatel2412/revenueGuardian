@@ -19,6 +19,20 @@ A comprehensive CRM and Commission Tracking system for Insurance Agents. This ap
 
 ---
 
+## Database Setup (Docker) 🐳
+#### We use Docker to run the PostgreSQL database locally. Run the following command in your terminal to spin up the database container with the required credentials:
+
+```bash
+#Credentials are mentioned in the .env 
+
+docker run --name revenue-guardian-db \
+  -e POSTGRES_DB=revenueGuardianDB \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -p 5432:5432 \
+  -d postgres
+```
+
 ## 📥 Installation Guide
 
 
@@ -82,3 +96,22 @@ The Frontend App will run at: http://localhost:5173/
 * Access the Dashboard:
 
 Go to http://localhost:5173/ and log in.
+
+
+## 📂 Project Structure
+```
+revenue-guardian/
+├── revenue_guardian_backend/   # Django Project
+│   ├── manage.py
+│   ├── revenue_guardian/       # Core Settings
+│   ├── policies/               # Main App (Models for Policies, Clients)
+│   └── users/                  # Custom User & Auth Logic
+│
+└── revenue_guardian_frontend/  # React Project
+    ├── src/
+    │   ├── components/         # Reusable UI (Sidebar, Header, Forms)
+    │   ├── context/            # AuthContext (Login State)
+    │   ├── pages/              # Main Views (Dashboard, ClientDetails)
+    │   └── services/           # API Connection (Axios)
+    └── package.json
+```
