@@ -2,7 +2,9 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from .models import Client, Policy, Carrier
 from .serializers import ClientSerializer, PolicySerializer, CarrierSerializer
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.db.models import Q
 
 class CarrierListView(generics.ListAPIView):
     queryset = Carrier.objects.all()
@@ -81,3 +83,37 @@ class PolicyDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Policy.objects.filter(client__agent=self.request.user)
+
+
+class GlobalSearchView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('q', '').strip()
+        if not query or len(query) < 2:
+            return Response({"clients": [], "policies": []})
+
+        user = request.user
+
+        # 1. Search Clients (Name, Email, Phone) belonging to this agent
+        clients = Client.objects.filter(
+            agent=user
+        ).filter(
+            Q(name__icontains=query) | 
+            Q(email__icontains=query) | 
+            Q(phone__icontains=query)
+        )[:5] # Limit to 5 results
+
+        # 2. Search Policies (Policy Number, Vehicle Number) belonging to this agent
+        policies = Policy.objects.filter(
+            client__agent=user
+        ).filter(
+            Q(policy_number__icontains=query) | 
+            Q(vehicle_number__icontains=query) |
+            Q(prev_policy_number__icontains=query)
+        )[:5] # Limit to 5 results
+
+        return Response({
+            "clients": ClientSerializer(clients, many=True).data,
+            "policies": PolicySerializer(policies, many=True).data
+        })

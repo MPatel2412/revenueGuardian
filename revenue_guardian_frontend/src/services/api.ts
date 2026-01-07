@@ -95,4 +95,11 @@ export const updatePolicy = async (id: number, data: PolicyFormData) => {
   return response.data;
 };
 
+export const searchGlobal = async (query: string) => {
+    // Only search if query is long enough to avoid spamming empty requests
+    if (query.length < 2) return { clients: [], policies: [] };
+    const response = await api.get(`search/?q=${encodeURIComponent(query)}`);
+    return response.data;
+};
+
 export default api;

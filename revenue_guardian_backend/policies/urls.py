@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     ClientListCreateView,
     PolicyListCreateView, PolicyDetailView,
-    CarrierListView, ClientRetrieveUpdateDestroyView, PolicyRetrieveUpdateDestroyView
+    CarrierListView, ClientRetrieveUpdateDestroyView, PolicyRetrieveUpdateDestroyView, GlobalSearchView
 )
 
 urlpatterns = [
@@ -17,4 +17,7 @@ urlpatterns = [
     
     # Carriers
     path('carriers/', CarrierListView.as_view(), name='carrier-list'),
+
+    # Global Search
+    path('search/', GlobalSearchView.as_view(), name='global-search'),
 ]
