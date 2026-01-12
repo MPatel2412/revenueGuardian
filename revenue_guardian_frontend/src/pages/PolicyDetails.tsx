@@ -59,14 +59,23 @@ const PolicyDetails = () => {
                 client: policyData.client,
                 carrier: policyData.carrier,
                 policy_number: policyData.policy_number,
+                prev_policy_number: policyData.prev_policy_number || '',
                 policy_type: policyData.policy_type,
                 status: policyData.status,
                 // Ensure numbers are strings for form inputs
                 premium_amount: String(policyData.premium_amount), 
+                s_tax: String(policyData.s_tax || 0),
                 sum_insured: String(policyData.sum_insured),
                 start_date: policyData.start_date,
                 end_date: policyData.end_date,
                 renewal_date: policyData.renewal_date,
+                vehicle_number: policyData.vehicle_number || '',
+                bank_name: policyData.bank_name || '',
+                cheque_number: policyData.cheque_number || '',
+                agency_code: policyData.agency_code || '',
+                od_net_amount: String(policyData.od_net_amount || 0),
+                commission_amount: String(policyData.commission_amount || 0),
+                remarks: policyData.remarks || '',
             });
             
             // Load dropdown options once
@@ -90,7 +99,7 @@ const PolicyDetails = () => {
     }, [policyId]);
 
     // --- 2. Form Handling ---
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
@@ -200,6 +209,53 @@ const PolicyDetails = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Sum Insured ($)</label>
                                 <input type="number" step="0.01" name="sum_insured" value={formData.sum_insured} onChange={handleChange} required className="w-full px-4 py-2 border rounded-lg" />
                             </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Surcharge Tax ($)</label>
+                                <input type="number" step="0.01" name="s_tax" value={formData.s_tax} onChange={handleChange} required className="w-full px-4 py-2 border rounded-lg" />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+
+                            </div>
+                        </div>
+
+                        {/* Additional Policy Information */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Previous Policy Number</label>
+                                <input type="text" name="prev_policy_number" value={formData.prev_policy_number} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Vehicle Number</label>
+                                <input type="text" name="vehicle_number" value={formData.vehicle_number} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg" />
+                            </div>
+                        </div>
+
+                        {/* Additional Finance Information */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
+                                <input type="text" name="bank_name" value={formData.bank_name} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Cheque Number</label>
+                                <input type="text" name="cheque_number" value={formData.cheque_number} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Agency Code</label>
+                                <input type="text" name="agency_code" value={formData.agency_code} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg" />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">OD Net Amount</label>
+                                <input type="number" step="0.01" name="od_net_amount" value={formData.od_net_amount} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Commission Amount</label>
+                                <input type="number" step="0.01" name="commission_amount" value={formData.commission_amount} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg" />
+                            </div>
                         </div>
 
                         {/* Row 4: Dates */}
@@ -217,7 +273,12 @@ const PolicyDetails = () => {
                                 <input type="date" name="renewal_date" value={formData.renewal_date} onChange={handleChange} required className="w-full px-4 py-2 border rounded-lg border-red-200 bg-red-50" />
                             </div>
                         </div>
-
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
+                                <textarea name="remarks" value={formData.remarks} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg" />
+                            </div>
+                        </div>
                         <div className="flex justify-end space-x-3 mt-6">
                             <button type="button" onClick={() => setIsEditing(false)} className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100">
                                 Cancel
@@ -272,6 +333,16 @@ const PolicyDetails = () => {
                                 </Link>
                             </div>
 
+                            {/* Additional Policy Information */}
+                            <div>
+                                <h3 className="text-sm font-medium text-gray-500">Previous Policy Number</h3>
+                                <p className="mt-1 font-semibold">{policy.prev_policy_number || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-medium text-gray-500">Vehicle Number</h3>
+                                <p className="mt-1 font-semibold">{policy.vehicle_number || 'N/A'}</p>
+                            </div>
+
                             {/* Financials */}
                             <div className="border-t pt-4 mt-4 md:col-span-2 lg:col-span-3 grid grid-cols-3 gap-x-10">
                                 <div>
@@ -284,7 +355,36 @@ const PolicyDetails = () => {
                                     <h3 className="text-sm font-medium text-gray-500">Sum Insured</h3>
                                     <p className="mt-1 text-lg font-semibold">${policy.sum_insured.toLocaleString()}</p>
                                 </div>
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-500">Surcharge Tax</h3>
+                                    <p className="mt-1 text-lg font-semibold">${policy.s_tax.toLocaleString()}</p>
+                                </div>
                             </div>
+
+                            {/* Additional Finance Information */}
+                            <div className="border-t pt-4 mt-4 md:col-span-2 lg:col-span-3 grid grid-cols-3 gap-x-10">
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-500">Bank Name</h3>
+                                    <p className="mt-1 text-lg font-semibold">{policy.bank_name || '\u00A0'}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-500">Cheque Number</h3>
+                                    <p className="mt-1 text-lg font-semibold">{policy.cheque_number || '\u00A0'}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-500">Agency Code</h3>
+                                    <p className="mt-1 text-lg font-semibold">{policy.agency_code || '\u00A0'}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-500">OD Net Amount</h3>
+                                    <p className="mt-1 text-lg font-semibold">{policy.od_net_amount != null ? `$${policy.od_net_amount.toLocaleString()}` : '\u00A0'}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-500">Commission Amount</h3>
+                                    <p className="mt-1 text-lg font-semibold">{policy.commission_amount != null ? `$${policy.commission_amount.toLocaleString()}` : '\u00A0'}</p>
+                                </div>
+                            </div>
+                            
 
                             {/* Dates */}
                             <div className="border-t pt-4 mt-4 md:col-span-2 lg:col-span-3 grid grid-cols-3 gap-x-10">
@@ -302,6 +402,12 @@ const PolicyDetails = () => {
                                     <h3 className="text-sm font-medium text-gray-500 text-red-600">Renewal Date</h3>
                                     <p className="mt-1 font-bold text-red-600">{policy.renewal_date}</p>
                                 </div>
+                            </div>
+
+                            {/* Remarks */}
+                            <div className="border-t pt-4 mt-4 md:col-span-2 lg:col-span-3">
+                                <h3 className="text-sm font-medium text-gray-500 mb-2">Remarks</h3>
+                                <p className="mt-1 text-gray-700 whitespace-pre-wrap">{policy.remarks || 'No remarks'}</p>
                             </div>
                         </div>
                     </div>
