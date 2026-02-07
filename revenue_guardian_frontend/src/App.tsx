@@ -12,7 +12,7 @@ import ClientsList from './pages/ClientsList';
 import ClientAdd from './pages/ClientAdd';
 import PolicyAdd from './pages/PolicyAdd';
 import type { JSX } from 'react';
-
+import CommissionLedger from './pages/CommissionLedger';
 
 // --- PRIVATE ROUTE COMPONENT ---
 // This handles both Security (Redirect to Login) and Layout (Adding Sidebar/Header)
@@ -85,15 +85,6 @@ function App() {
             />
 
             <Route 
-                path="/renewals" 
-                element={
-                    <PrivateRoute>
-                        <div className="p-10 text-xl text-gray-500">Renewals Management (Coming Soon)</div>
-                    </PrivateRoute>
-                } 
-            />
-
-            <Route 
                 path="/settings" 
                 element={
                     <PrivateRoute>
@@ -106,6 +97,14 @@ function App() {
                 element={
                     <PrivateRoute>
                         <ClientsList />
+                    </PrivateRoute>
+                } 
+            />
+            <Route 
+            path="/ledger" 
+                element={
+                    <PrivateRoute>
+                        <CommissionLedger />
                     </PrivateRoute>
                 } 
             />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { AlertTriangle, Search, Calendar, ChevronDown } from 'lucide-react';
+import { AlertTriangle, Search, Calendar, ChevronDown, Filter} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { getPolicyList } from '../services/api'; 
+import { getPolicyList, getCarriers} from '../services/api'; 
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
@@ -36,21 +36,41 @@ const Dashboard = () => {
     const [policies, setPolicies] = useState<Policy[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('all');
+    const [carriers, setCarriers] = useState<any[]>([]); // Store list of companies
+    const [selectedCarrier, setSelectedCarrier] = useState<string>('all'); // Store filter choice
 
     useEffect(() => {
-        const fetchPolicies = async () => {
+        // const fetchPolicies = async () => {
+        //     try {
+        //         const data = await getPolicyList();
+        //         console.log("Dashboard Data Loaded:", data); // Debug Log
+        //         setPolicies(data);
+        //     } catch (error) {
+        //         console.error("Dashboard Fetch Error:", error);
+        //         toast.error("Could not load policies.");
+        //     } finally {
+        //         setLoading(false);
+        //     }
+        // };
+        // fetchPolicies();
+        const loadDashboardData = async () => {
             try {
-                const data = await getPolicyList();
-                console.log("Dashboard Data Loaded:", data); // Debug Log
-                setPolicies(data);
+                // Fetch both Policies and Carriers in parallel
+                const [policiesData, carriersData] = await Promise.all([
+                    getPolicyList(),
+                    getCarriers()
+                ]);
+                
+                setPolicies(policiesData);
+                setCarriers(carriersData);
             } catch (error) {
                 console.error("Dashboard Fetch Error:", error);
-                toast.error("Could not load policies.");
+                // toast.error("Could not load dashboard data.");
             } finally {
                 setLoading(false);
             }
         };
-        fetchPolicies();
+        loadDashboardData();
     }, []);
 
     // Filter Logic
@@ -61,7 +81,13 @@ const Dashboard = () => {
         return p.status !== 'LAPSED' && diffDays >= 0 && diffDays <= 30; 
     });
 
-    const displayedPolicies = activeTab === 'all' ? policies : upcomingRenewals;
+    const tabFilteredPolicies = activeTab === 'all' ? policies : upcomingRenewals;
+
+    // const displayedPolicies = activeTab === 'all' ? policies : upcomingRenewals;
+    const displayedPolicies = tabFilteredPolicies.filter(p => {
+        if (selectedCarrier === 'all') return true;
+        return p.carrier.toString() === selectedCarrier;
+    });
 
     if (loading) return <div className="p-10 text-center">Loading Dashboard...</div>;
 
@@ -92,7 +118,7 @@ const Dashboard = () => {
             {/* Main Table Card */}
             <div className="bg-white p-6 rounded-lg shadow">
                 
-                {/* Tabs */}
+                {/* Tabs
                 <div className="flex border-b mb-4">
                     <button onClick={() => setActiveTab('all')} className={`py-2 px-4 text-sm font-medium ${activeTab === 'all' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}>
                         All Policies ({policies.length})
@@ -100,6 +126,34 @@ const Dashboard = () => {
                     <button onClick={() => setActiveTab('upcoming')} className={`py-2 px-4 text-sm font-medium ${activeTab === 'upcoming' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}>
                          Upcoming Renewals
                     </button>
+                </div> */}
+                {/* Header: Tabs + Filter */}
+                <div className="flex flex-col sm:flex-row justify-between items-center border-b mb-4 pb-2 gap-4">
+                    
+                    {/* Tabs */}
+                    <div className="flex space-x-4">
+                        <button onClick={() => setActiveTab('all')} className={`py-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'all' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
+                            All Policies
+                        </button>
+                        <button onClick={() => setActiveTab('upcoming')} className={`py-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'upcoming' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
+                             Upcoming Renewals
+                        </button>
+                    </div>
+
+                    {/* Carrier Filter Dropdown */}
+                    <div className="flex items-center space-x-2">
+                        <Filter className="h-4 w-4 text-gray-400" />
+                        <select 
+                            value={selectedCarrier}
+                            onChange={(e) => setSelectedCarrier(e.target.value)}
+                            className="border border-gray-300 rounded-md text-sm py-1 pl-2 pr-8 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        >
+                            <option value="all">All Carriers</option>
+                            {carriers.map(c => (
+                                <option key={c.id} value={c.id}>{c.name}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
                 {/* Table */}

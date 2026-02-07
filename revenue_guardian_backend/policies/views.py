@@ -5,6 +5,8 @@ from .serializers import ClientSerializer, PolicySerializer, CarrierSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Q
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncMonth
 
 class CarrierListView(generics.ListAPIView):
     queryset = Carrier.objects.all()
@@ -117,3 +119,25 @@ class GlobalSearchView(APIView):
             "clients": ClientSerializer(clients, many=True).data,
             "policies": PolicySerializer(policies, many=True).data
         })
+
+class CommissionSummaryView(APIView):
+    """
+    Returns monthly aggregation of commissions and business volume.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        # 1. Get all active policies for this agent
+        # We filter by 'start_date' to see when the business was booked
+        queryset = Policy.objects.filter(
+            client__agent=request.user,
+            status='ACTIVE'
+        ).annotate(
+            month=TruncMonth('start_date')
+        ).values('month').annotate(
+            total_commission=Sum('commission_amount'),
+            total_premium=Sum('premium_amount'),
+            policy_count=Count('id')
+        ).order_by('-month') # Most recent first
+
+        return Response(queryset)

@@ -1,11 +1,11 @@
 // src/components/Sidebar.tsx
 import { NavLink } from 'react-router-dom';
-import { Home, Users, AlertTriangle, Settings } from 'lucide-react';
+import { Home, Users, AlertTriangle, Settings, DollarSign } from 'lucide-react';
 
 const navItems = [
     { name: 'Overview', icon: Home, path: '/' },
     { name: 'Clients', icon: Users, path: '/clients' },
-    { name: 'Renewals', icon: AlertTriangle, path: '/renewals' },
+    { name: 'Commission Ledger', icon: DollarSign, path: '/ledger' },
 ];
 
 const Sidebar = () => {

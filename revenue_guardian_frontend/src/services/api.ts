@@ -102,4 +102,9 @@ export const searchGlobal = async (query: string) => {
     return response.data;
 };
 
+export const getCommissionSummary = async () => {
+  const response = await api.get('reports/commission-summary/');
+  return response.data;
+};
+
 export default api;

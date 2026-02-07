@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     ClientListCreateView,
     PolicyListCreateView, PolicyDetailView,
-    CarrierListView, ClientRetrieveUpdateDestroyView, PolicyRetrieveUpdateDestroyView, GlobalSearchView
+    CarrierListView, ClientRetrieveUpdateDestroyView, PolicyRetrieveUpdateDestroyView, GlobalSearchView, CommissionSummaryView
 )
 
 urlpatterns = [
@@ -20,4 +20,5 @@ urlpatterns = [
 
     # Global Search
     path('search/', GlobalSearchView.as_view(), name='global-search'),
+    path('reports/commission-summary/', CommissionSummaryView.as_view(), name='commission-summary'),
 ]
